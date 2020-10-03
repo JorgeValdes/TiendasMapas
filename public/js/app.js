@@ -49869,52 +49869,101 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _require = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"),
-    truncate = _require.truncate;
+var _require = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"),
+    makeArray = _require.makeArray; //const provider = new OpenStreetMapProvider();
+
+
+var _require2 = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"),
+    truncate = _require2.truncate;
 
 document.addEventListener("DOMContentLoaded", function () {
   if (document.querySelector("#mapa")) {
+    var reubicarPin = function reubicarPin(marker) {
+      marker.on("moveend", function (e) {
+        // console.log("soltaste el pin");
+        marker = e.target; //console.log(marker.getLatLng());
+
+        var position = marker.getLatLng(); //centrar automaticamente
+
+        mapa.panTo(new L.LatLng(position.lat, position.lng)); //Reverse Geocoding , cuando el usuario reubica el pin
+
+        geocodeService.reverse().latlng(position, 16).run(function (error, e) {
+          // console.log(error);
+          //console.log("direccion", e.address);
+          direccion = e.address.Address;
+          marker.bindPopup(e.address.Address);
+          marker.openPopup(); // Llenar los campos
+
+          llenarInputs(e);
+        });
+      });
+    };
+
+    var llenarInputs = function llenarInputs(e) {
+      //console.log("desde llenar inputs", e);
+      document.querySelector("#direccion").value = e.address.Address || "";
+      document.querySelector("#lat").value = e.latlng.lat || "";
+      document.querySelector("#lng").value = e.latlng.lng || "";
+    };
+
+    var buscarDireccion = function buscarDireccion(e) {
+      //console.log("desde buscar direccion");
+      var provider = new GeoSearch.OpenStreetMapProvider();
+
+      if (e.target.value.length > 1) {
+        //limpiar pines previos
+        markers.clearLayers();
+        provider.search({
+          query: e.target.value + " TALCA "
+        }).then(function (e) {
+          if (e[0]) {
+            //console.log(e[0].bounds[0]);
+            geocodeService.reverse().latlng(e[0].bounds[0], 16).run(function (error, e) {
+              // console.log(error);
+              //lenar los inputs de abajo , centrar el mapa , agregar el Pin , Mover el Pin
+              //console.log(e);
+              llenarInputs(e);
+              mapa.setView(e.latlng);
+              marker = new L.marker(e.latlng, {
+                draggable: true,
+                autoPan: true
+              }).addTo(mapa); //asignar el contenedor de market al nuevo pink
+
+              markers.addLayer(marker); ///reubica el pin cuando se realiza el marker
+
+              reubicarPin(marker);
+            });
+          }
+        })["catch"](function (error) {//console.log(error);
+        });
+      }
+    };
+
     var lat = -35.416508;
     var lng = -71.653391;
-    var mapa = L.map("mapa").setView([lat, lng], 17);
+    var mapa = L.map("mapa").setView([lat, lng], 17); //eliminar pines previos
+
+    var markers = new L.FeatureGroup().addTo(mapa);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(mapa);
-    var marker; // agregar el pin
+    var marker;
+    var direccion = ""; // agregar el pin
     // marker = new L.marker([lat, lng]).addTo(mapa);
 
     marker = new L.marker([lat, lng], {
       draggable: true,
       autoPan: true
-    }).addTo(mapa); // console.log(marker._latlng);
+    }).addTo(mapa); //agregando el pin cuando se inicia el mapa a los grupo de pines para poder limpiarlo despues
 
-    var geocodeService = L.esri.Geocoding.geocodeService();
-    marker.on("moveend", function (e) {
-      // console.log("soltaste el pin");
-      marker = e.target; //console.log(marker.getLatLng());
+    markers.addLayer(marker); // Geocode Service
 
-      var position = marker.getLatLng(); //centrar automaticamente
+    var geocodeService = L.esri.Geocoding.geocodeService(); // Buscador de direcciones
 
-      mapa.panTo(new L.LatLng(position.lat, position.lng)); //Reverse Geocoding , cuando el usuario reubica el pin
+    var buscador = document.querySelector("#formbuscador");
+    buscador.addEventListener("blur", buscarDireccion); //el lugar de input , ocuparemos el método blur en caso para que pinche por fuera
 
-      geocodeService.reverse().latlng(position, 16).run(function (error, e) {
-        // console.log(error);
-        console.log("direccion", e.address);
-        var direccion = e.address;
-      });
-      marker.bindPopup("<b>" + " Calle 9 Oriente 1924-1988" + "<br>");
-      marker.openPopup();
-    });
-    /*      
-    marker.on("click", function(e) {
-        console.log("click");
-    });
-      function onMapClick(e) {
-        popup
-            .setLatLng(e.latlng)
-            .setContent("You clicked the map at " + e.latlng.toString())
-            .openOn(mymap);
-    } */
+    reubicarPin(marker);
   }
 });
 
@@ -49938,8 +49987,8 @@ document.addEventListener("DOMContentLoaded", function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! E:\Proyectos repositorios git\Establecimiento\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! E:\Proyectos repositorios git\Establecimiento\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! E:\Proyectos repositorios git\TiendasMapas\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! E:\Proyectos repositorios git\TiendasMapas\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

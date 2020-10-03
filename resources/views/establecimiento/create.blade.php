@@ -12,6 +12,11 @@ rel="stylesheet"
 href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css"
 />
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css"
+/>
 @endsection
 
 @section('content')
@@ -91,7 +96,7 @@ href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css"
                         placeholder="Calle de Negocio o Establecimiento" 
                                      
                         >
-                        <p class="text-secondary mt-5 mb-3 text-center">El asistente colocará una ubicacion estimada , Mueve el Pin hacia el lugar correcto </p>
+                        <p class="text-secondary mt-5 mb-3 text-center">El asistente colocará una ubicacion estimada o Mueve el Pin hacia el lugar correcto </p>
     
                         
                     </div>
@@ -163,6 +168,8 @@ integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0v
 crossorigin=""></script>
 <script src="https://unpkg.com/esri-leaflet"></script>
 <script src="https://unpkg.com/esri-leaflet-geocoder" defer></script>
+
+<script src="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.umd.js"></script>
 
 {{-- con la utilizacion de webpacks y archivos separados la carga del mapa se crea en archivo distintos  --}}
 {{--   <script>

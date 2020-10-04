@@ -17,6 +17,14 @@ href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css"
   rel="stylesheet"
   href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css"
 />
+
+
+
+
+{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/basic.min.css" integrity="sha512-MeagJSJBgWB9n+Sggsr/vKMRFJWs+OUphiDV7TJiYu+TNQD9RtVJaPDYP8hA/PAjwRnkdvU+NsTncYTKlltgiw==" crossorigin="anonymous" /> --}}
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/basic.css" integrity="sha512-Ucip2staDcls3OuwEeh5s9rRVYBsCA4HRr18+qd0Iz3nYpnfUeCIMh/82aHKeYgdaXGebmi9vcREw7YePXsutQ==" crossorigin="anonymous" />
 @endsection
 
 @section('content')
@@ -62,6 +70,8 @@ href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css"
                     </select>
                 </div>
 
+          
+
 
                 <div class="form-group">
                     <label for="imagen_principal">Imagen Principal</label>
@@ -82,8 +92,10 @@ href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css"
                     @enderror
                 </div>
 
+            </fieldset>
 
-               {{--  <fieldset class="border p-4"> {{-- Grupo de campos cada campo tiene que estar en su propio ddiv --}} 
+
+               <fieldset class="border p-4 mt-5"> {{-- Grupo de campos cada campo tiene que estar en su propio ddiv --}} 
                     <legend class="text-primary">Ubicacion</legend>
     
                     <div class="form-group">
@@ -142,14 +154,98 @@ href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css"
                         </div>
                         @enderror
                     </div> --}}
+                </fieldset>
 
+
+                <fieldset class="border p-4 mt-5">
                 <input type="hidden" id="lat" name="lat" value="{{old('lat')}}">
                 <input type="hidden" id="lng" name="lng" value="{{old('lng')}}">
               
-                
-            </fieldset>
-            </form>
+                <legend  class="text-primary">Información Establecimiento: </legend>
+                <div class="form-group">
+                    <label for="nombre">Teléfono</label>
+                    <input 
+                        type="tel" 
+                        class="form-control @error('telefono')  is-invalid  @enderror" 
+                        id="telefono" 
+                        placeholder="Teléfono Establecimiento"
+                        name="telefono"
+                        value="{{ old('telefono') }}"
+                    >
 
+                        @error('telefono')
+                            <div class="invalid-feedback">
+                                {{$message}}
+                            </div>
+                        @enderror
+                </div>
+
+                
+
+                <div class="form-group">
+                    <label for="nombre">Descripción</label>
+                    <textarea
+                        class="form-control  @error('descripcion')  is-invalid  @enderror" 
+                        name="descripcion"
+                    >{{ old('descripcion') }}</textarea>
+
+                        @error('descripcion')
+                            <div class="invalid-feedback">
+                                {{$message}}
+                            </div>
+                        @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="nombre">Hora Apertura:</label>
+                    <input 
+                        type="time" 
+                        class="form-control @error('apertura')  is-invalid  @enderror" 
+                        id="apertura" 
+                        name="apertura"
+                        value="{{ old('apertura') }}"
+                    >
+                    @error('apertura')
+                        <div class="invalid-feedback">
+                            {{$message}}
+                        </div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="nombre">Hora Cierre:</label>
+                    <input 
+                        type="time" 
+                        class="form-control @error('cierre')  is-invalid  @enderror" 
+                        id="cierre" 
+                        name="cierre"
+                        value="{{ old('cierre') }}"
+                    >
+                    @error('cierre')
+                        <div class="invalid-feedback">
+                            {{$message}}
+                        </div>
+                    @enderror
+                </div>
+            </fieldset>
+
+            <fieldset class="border p-4 mt-5">
+                <legend class="text-primary">Imagenes del Establecimiento</legend>
+                
+                <div class="form-group">
+                    <label for="imagenes">Imagenes</label>
+                    <div id="dropzone" class="dropzone form-control"></div>       
+                    <meta name="csrf-token" content="{{ csrf_token() }}">
+                   
+                </div>
+            </fieldset>
+
+            <input type="hidden" id="uuid" name="uuid" value="{{Str::uuid()->toString()}}">
+            <input type="submit" class="btn btn-primary mt-3 d-block" value="Registrar Establecimiento">
+          </form>
+
+
+            
         </div>
 
        
@@ -171,24 +267,9 @@ crossorigin=""></script>
 
 <script src="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.umd.js"></script>
 
-{{-- con la utilizacion de webpacks y archivos separados la carga del mapa se crea en archivo distintos  --}}
-{{--   <script>
-/*    document.addEventListener('DOMContentLoaded', () => {
 
-    const lat = -35.416508;
-    const lng = -71.653391;
+{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/min/dropzone.min.js" integrity="sha512-9WciDs0XP20sojTJ9E7mChDXy6pcO0qHpwbEJID1YVavz2H6QBz5eLoDD8lseZOb2yGT8xDNIV7HIe1ZbuiDWg==" crossorigin="anonymous" defer></script> --}}
 
-    const mapa = L.map('mapa').setView([lat, lng], 17);
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/dropzone.min.js" integrity="sha512-8l10HpXwk93V4i9Sm38Y1F3H4KJlarwdLndY9S5v+hSAODWMx3QcAVECA23NTMKPtDOi53VFfhIuSsBjjfNGnA==" crossorigin="anonymous" defer></script>
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(mapa);
-
-    let marker;
-
-    // agregar el pin
-    marker = new L.marker([lat, lng]).addTo(mapa);
-
-}); */
-  </script> --}}
 @endsection
